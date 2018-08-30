@@ -13,8 +13,9 @@ import java.util.concurrent.CyclicBarrier;
 
 public class Main {
     static final int CARS_COUNT = 4;
-    static final CountDownLatch countDownLatch = new CountDownLatch(CARS_COUNT);
-    static final CyclicBarrier barrier = new CyclicBarrier(CARS_COUNT);
+    static final CountDownLatch countDownLatchFinish = new CountDownLatch(CARS_COUNT);
+    static final CountDownLatch countDownLatchReady = new CountDownLatch(CARS_COUNT);
+    static final CyclicBarrier startBarrier = new CyclicBarrier(CARS_COUNT);
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
@@ -27,8 +28,9 @@ public class Main {
         for (Car car : cars) {
             new Thread(car).start();
         }
+        countDownLatchReady.await();
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
-        countDownLatch.await();
+        countDownLatchFinish.await();
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
     }
 }

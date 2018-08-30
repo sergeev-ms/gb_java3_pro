@@ -9,13 +9,15 @@ public class Car implements Runnable {
     private Race race;
     private int speed;
     private String name;
-    private static CyclicBarrier barrier;
-    private static CountDownLatch countDownLatch;
+    private static CyclicBarrier startBarrier;
+    private static CountDownLatch countDownLatchFinish;
+    private static CountDownLatch countDownLatchReady;
 
     static {
         CARS_COUNT++;
-        countDownLatch = Main.countDownLatch;
-        barrier = Main.barrier;
+        countDownLatchFinish = Main.countDownLatchFinish;
+        countDownLatchReady = Main.countDownLatchReady;
+        startBarrier = Main.startBarrier;
     }
 
     String getName() {
@@ -34,8 +36,9 @@ public class Car implements Runnable {
         try {
             System.out.println(this.name + " готовится");
             Thread.sleep(500 + (int)(Math.random() * 800));
+            countDownLatchReady.countDown();
             System.out.println(this.name + " готов");
-            barrier.await();
+            startBarrier.await();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,6 +46,6 @@ public class Car implements Runnable {
         for (Stage stage : stages) {
             stage.go(this);
         }
-        countDownLatch.countDown();
+        countDownLatchFinish.countDown();
     }
 }
