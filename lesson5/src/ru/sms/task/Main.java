@@ -8,9 +8,8 @@
 */
 package ru.sms.task;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 public class Main {
     static final int CARS_COUNT = 4;
@@ -21,15 +20,14 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
         Race race = new Race(new Road(60), new Tunnel(80), new Road(40));
-        List<Car> cars = new ArrayList<>();
-        for (int i = 0; i < CARS_COUNT; i++) {
+        Car[] cars = new Car[CARS_COUNT];
+        for (int i = 0; i < cars.length; i++) {
             final int randomSpeed = 20 + (int) (Math.random() * 10);
-            final Car car = new Car(race, randomSpeed);
-            cars.add(car);
+            cars[i] = new Car(race, randomSpeed);
         }
-        final ExecutorService executorService = Executors.newFixedThreadPool(CARS_COUNT);
-        executorService.invokeAll(cars);
-
+        for (Car car : cars) {
+            new Thread(car).start();
+        }
         countDownLatchReady.await();
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
         countDownLatchFinish.await();
