@@ -14,7 +14,6 @@ public class Car implements Runnable {
     private static CountDownLatch countDownLatchReady;
 
     static {
-        CARS_COUNT++;
         countDownLatchFinish = Main.countDownLatchFinish;
         countDownLatchReady = Main.countDownLatchReady;
         startBarrier = Main.startBarrier;
@@ -29,6 +28,7 @@ public class Car implements Runnable {
     Car(Race race, int speed) {
         this.race = race;
         this.speed = speed;
+        CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
     }
     @Override
